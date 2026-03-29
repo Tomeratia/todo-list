@@ -5,21 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Todo List</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Todo List</h1>
+  <div class="app">
 
-    <div class="input-row">
-      <input id="todo-input" type="text" placeholder="Add a new task..." />
-      <button id="add-btn">Add</button>
-    </div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <i class="fa-solid fa-list-check"></i>
+        <span>TodoPro</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-filter="all"><i class="fa-solid fa-inbox"></i> All Tasks <span class="badge" id="badge-all"></span></button>
+        <button class="nav-btn" data-filter="today"><i class="fa-solid fa-sun"></i> Today <span class="badge" id="badge-today"></span></button>
+        <button class="nav-btn" data-filter="upcoming"><i class="fa-solid fa-calendar"></i> Upcoming <span class="badge" id="badge-upcoming"></span></button>
+        <button class="nav-btn" data-filter="overdue"><i class="fa-solid fa-triangle-exclamation"></i> Overdue <span class="badge badge-red" id="badge-overdue"></span></button>
+        <button class="nav-btn" data-filter="done"><i class="fa-solid fa-circle-check"></i> Completed <span class="badge" id="badge-done"></span></button>
+      </nav>
+      <div class="sidebar-section">Categories</div>
+      <nav class="sidebar-nav" id="category-nav"></nav>
+      <div class="stats-box">
+        <div class="stat"><span id="stat-total">0</span><small>Total</small></div>
+        <div class="stat"><span id="stat-done">0</span><small>Done</small></div>
+        <div class="stat"><span id="stat-overdue">0</span><small>Overdue</small></div>
+      </div>
+    </aside>
 
-    <ul id="todo-list"></ul>
+    <!-- Main -->
+    <main class="main">
+      <header class="main-header">
+        <div class="header-left">
+          <h1 id="view-title">All Tasks</h1>
+          <span id="subtitle"></span>
+        </div>
+        <div class="header-right">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-input" placeholder="Search tasks..." />
+          </div>
+          <select id="sort-select">
+            <option value="created">Sort: Date Added</option>
+            <option value="due">Sort: Due Date</option>
+            <option value="priority">Sort: Priority</option>
+            <option value="alpha">Sort: A–Z</option>
+          </select>
+          <button class="btn-primary" id="open-modal-btn"><i class="fa-solid fa-plus"></i> New Task</button>
+        </div>
+      </header>
 
-    <div class="footer" id="footer" style="display:none">
-      <span id="count"></span>
-      <button id="clear-btn">Clear completed</button>
+      <div id="task-list" class="task-list"></div>
+      <div id="empty-state" class="empty-state" style="display:none">
+        <i class="fa-regular fa-clipboard"></i>
+        <p>No tasks here yet.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">New Task</h2>
+        <button class="modal-close" id="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Title <span class="required">*</span></label>
+          <input type="text" id="f-title" placeholder="What needs to be done?" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="f-desc" rows="3" placeholder="Add more details..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Due Date</label>
+            <input type="date" id="f-due" />
+          </div>
+          <div class="form-group">
+            <label>Due Time</label>
+            <input type="time" id="f-time" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="f-priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <input type="text" id="f-category" placeholder="e.g. Work, Personal..." list="cat-list" />
+            <datalist id="cat-list"></datalist>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tags <small>(comma separated)</small></label>
+          <input type="text" id="f-tags" placeholder="e.g. urgent, design, bug" />
+        </div>
+        <div class="form-group">
+          <label>Subtasks</label>
+          <div id="subtask-list"></div>
+          <div class="subtask-add-row">
+            <input type="text" id="f-subtask-input" placeholder="Add subtask..." />
+            <button type="button" id="f-subtask-btn"><i class="fa-solid fa-plus"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="modal-cancel">Cancel</button>
+        <button class="btn-primary" id="modal-save">Save Task</button>
+      </div>
     </div>
   </div>
 
